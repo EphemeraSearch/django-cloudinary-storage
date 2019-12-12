@@ -4,12 +4,18 @@ import errno
 
 from django.core.files import File
 from django.core.management import call_command
-from django.utils.six import StringIO
+from six import StringIO
 from django.utils import version
 
 from cloudinary_storage import app_settings
-from cloudinary_storage.storage import MediaCloudinaryStorage, StaticHashedCloudinaryStorage, HashedFilesMixin
-from cloudinary_storage.management.commands.deleteorphanedmedia import Command as DeleteOrphanedMediaCommand
+from cloudinary_storage.storage import (
+    MediaCloudinaryStorage,
+    StaticHashedCloudinaryStorage,
+    HashedFilesMixin,
+)
+from cloudinary_storage.management.commands.deleteorphanedmedia import (
+    Command as DeleteOrphanedMediaCommand,
+)
 
 
 def get_random_name():
@@ -33,11 +39,22 @@ class StaticHashedStorageTestsMixin(object):
     def setUpClass(cls):
         StaticHashedCloudinaryStorage.manifest_name = get_random_name()
         hash_mixin = HashedFilesMixin()
-        content = File(open(os.path.join('tests', 'static', 'tests', 'css', 'style.css'), 'rb'))
-        cls.style_hash = hash_mixin.file_hash('tests/css/style.css', content)
+        content = File(
+            open(os.path.join("tests", "static", "tests", "css", "style.css"), "rb")
+        )
+        cls.style_hash = hash_mixin.file_hash("tests/css/style.css", content)
         content.close()
-        content = File(open(os.path.join('tests', 'static', 'tests', 'images', 'dummy-static-image.jpg'), 'rb'))
-        cls.image_hash = hash_mixin.file_hash('tests/images/dummy-static-image.jpg', content)
+        content = File(
+            open(
+                os.path.join(
+                    "tests", "static", "tests", "images", "dummy-static-image.jpg"
+                ),
+                "rb",
+            )
+        )
+        cls.image_hash = hash_mixin.file_hash(
+            "tests/images/dummy-static-image.jpg", content
+        )
         content.close()
         name = StaticHashedCloudinaryStorage.manifest_name
         cls.manifest_path = os.path.join(app_settings.STATICFILES_MANIFEST_ROOT, name)
@@ -51,7 +68,7 @@ class StaticHashedStorageTestsMixin(object):
             if e.errno != errno.ENOENT:
                 raise
         super(StaticHashedStorageTestsMixin, cls).tearDownClass()
-        StaticHashedCloudinaryStorage.manifest_name = 'staticfiles.json'
+        StaticHashedCloudinaryStorage.manifest_name = "staticfiles.json"
 
 
 def import_mock():

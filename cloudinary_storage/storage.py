@@ -307,10 +307,14 @@ class HashCloudinaryMixin(object):
         opened = False
         if content is None:
             absolute_path = finders.find(clean_name)
+            print(
+                f"Content is none; absolute_path: {absolute_path} / filename: {filename} / name: {name}"
+            )
             try:
                 content = open(absolute_path, "rb")
             except (IOError, OSError) as e:
                 if e.errno == errno.ENOENT:
+                    print(e)
                     raise ValueError(
                         "The file '%s' could not be found with %r." % (clean_name, self)
                     )
